@@ -3,6 +3,10 @@ name: Page
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'deploy/**'
+      - 'tests/data_**.yml'
+      - '.github/workflows/pages.yml'
 
 permissions:
   contents: read
