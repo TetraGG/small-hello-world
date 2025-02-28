@@ -36,16 +36,16 @@ _start:
     ; write(1, message, mlength)
     write:
         inc     al
-        mov     dl, al
+        mov     dil, al
         mov     esi, message
         mov     dl, mlength
         syscall
     ; exit(0)
     exit:
         mov     al, 0x3c
-        xor     dl, dl
+        dec     dil
         syscall
 
-message: db     "Hello, world!", byte `\n`
+message: db     "Hello, World!", byte `\n`
 mlength  equ    $ - message
 filesize equ    $ - _start
