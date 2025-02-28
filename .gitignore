@@ -1,1 +1,8 @@
-*/*_hello_world
+asm/*_hello_world
+c/tiny_hello_world
+cpp/tiny_hello_world
+go/tiny_hello_world
+java/tinyHelloWorld.class
+java/tinyHelloWorld.jar
+rust/tiny_hello_world
+zig/tiny_hello_world
