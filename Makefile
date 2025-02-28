@@ -49,6 +49,7 @@ zig/tiny_hello_world: zig/tiny_hello_world.zig
 	$(RM) $@.o
 
 tests: all
+	chmod +x $(BIN) $(SEMI_COMP) $(INT)
 	./tests/tests.py -c $(BIN)
 	./tests/tests.py -sc $(SEMI_COMP)
 	./tests/tests.py -i $(INT)
