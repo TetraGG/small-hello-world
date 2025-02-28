@@ -22,6 +22,7 @@ def check_output(module: str) -> bool:
     return False
   return True
 
+
 def check_size(module: str) -> int:
   process = subprocess.run(["wc", "-c", module], capture_output=True,
                            text=True)
@@ -33,7 +34,6 @@ def check_size(module: str) -> int:
         "\nstderr={" + process.stderr + "}")
     return -1
   return int(process.stdout.split(' ')[0])
-
 
 
 def compiled(modules: list[str]) -> dict[str, int]:
@@ -100,5 +100,15 @@ if __name__ == "__main__":
     print("No arguments given")
     parser.print_help()
     sys.exit(1)
-  with open('tests/data_' + mode + '.yml', 'w') as outfile:
+  with open('tests/data_' + mode + '.yml', 'r+') as outfile:
+    ref_data: dict[str, int] = yaml.load(outfile, Loader=yaml.SafeLoader)
+    for item, value in ref_data.items():
+      if item not in module_results:
+        print("Missing " + item + " in test data")
+        sys.exit(1)
+      if value < module_results[item]:
+        print(
+          item + " has a greater size " + str(value) + " < " + str(module_results[item]))
+        sys.exit(2)
+    outfile.seek(0, 0)
     yaml.dump(module_results, outfile, default_flow_style=False)
