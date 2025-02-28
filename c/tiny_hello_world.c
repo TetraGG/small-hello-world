@@ -1,5 +1,7 @@
 #include <unistd.h>
 
+#define UNUSED(x) (void)(x)
+
 int main() {
-    write(1, "Hello, World!\n", 14);
+    UNUSED(write(1, "Hello, World!\n", 14));
 }
