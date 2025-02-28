@@ -1,7 +1,8 @@
 #include <unistd.h>
 
-#define UNUSED(x) (void)(x)
-
 int main() {
-    UNUSED(write(1, "Hello, World!\n", 14));
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-result"
+    write(1, "Hello, World!\n", 14);
+    #pragma GCC diagnostic pop
 }
