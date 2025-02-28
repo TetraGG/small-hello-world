@@ -49,10 +49,15 @@ zig/tiny_hello_world: zig/tiny_hello_world.zig
 	$(RM) $@.o
 
 tests: all
-	chmod +x $(BIN) $(SEMI_COMP) $(INT)
 	./tests/tests.py -c $(BIN)
 	./tests/tests.py -sc $(SEMI_COMP)
 	./tests/tests.py -i $(INT)
+
+tests-ci: all
+	chmod +x $(BIN) $(SEMI_COMP) $(INT)
+	./tests/tests.py -ss -c $(BIN)
+	./tests/tests.py -ss -sc $(SEMI_COMP)
+	./tests/tests.py -ss -i $(INT)
 
 clean:
 	$(RM) $(BIN) java/TinyHelloWorld.class java/TinyHelloWorld.jar

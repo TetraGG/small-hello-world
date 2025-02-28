@@ -81,6 +81,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(
       prog='Tiny Hello World Tester',
       description='Check validity of generated binaries')
+  parser.add_argument('-ss', '--skip_size_check', action="store_true")
   parser.add_argument('-c', '--compiled', nargs='+', default=[])
   parser.add_argument('-sc', '--semi-compiled', nargs='+', default=[])
   parser.add_argument('-i', '--interpreted', nargs='+', default=[])
@@ -106,7 +107,7 @@ if __name__ == "__main__":
       if item not in module_results:
         print("Missing " + item + " in test data")
         sys.exit(2)
-      if value < module_results[item]:
+      if not args.skip_size_check and value < module_results[item]:
         print(
           item + " has a greater size " + str(value) + " < " + str(module_results[item]))
         sys.exit(3)
