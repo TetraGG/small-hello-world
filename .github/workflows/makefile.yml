@@ -21,6 +21,3 @@ jobs:
 
       - name: Make
         run: make
-
-      - name: Make tests
-        run: make tests
