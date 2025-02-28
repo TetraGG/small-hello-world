@@ -59,7 +59,8 @@ tests-ci: all
 	./tests/tests.py -ss -sc $(SEMI_COMP)
 	./tests/tests.py -ss -i $(INT)
 
-deploy: tests
+# Manual dependency
+deploy:
 	cp tests/data_*.yml deploy/
 
 clean:
