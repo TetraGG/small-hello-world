@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiny Hello World</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Results</h1>
+  <table id="resultTable">
+    <thead>
+    <tr>
+      <th onclick="sortTable(0)">Language</th>
+      <th onclick="sortTable(1)">Kind</th>
+      <th onclick="sortTable(2)">Size (in bytes)</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<script>
+  async function loadData() {
+    const compiledData = await fetch('data_compiled.yml').then(response => response.text());
+    const interpretedData = await fetch('data_interpreted.yml').then(response => response.text());
+    const semiCompiledData = await fetch('data_semi_compiled.yml').then(response => response.text());
+
+    const compiled = jsyaml.load(compiledData);
+    const interpreted = jsyaml.load(interpretedData);
+    const semiCompiled = jsyaml.load(semiCompiledData);
+
+    const data = {
+      compiled: compiled,
+      interpreted: interpreted,
+      semiCompiled: semiCompiled
+    };
+
+    const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
+    const languages = new Set();
+
+    for (const [kind, languagesData] of Object.entries(data)) {
+      for (const [language, size] of Object.entries(languagesData)) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${language}</td><td>${kind}</td><td>${size}</td>`;
+        tableBody.appendChild(row);
+        languages.add(language);
+      }
+    }
+    sortTable(0);
+  }
+
+  let sortOrder = true; // true for ascending, false for descending
+  let previousSort = -1;
+
+  function sortTable(columnIndex) {
+    const table = document.getElementById('resultTable');
+    const tbody = table.getElementsByTagName('tbody')[0];
+    const rows = Array.from(tbody.getElementsByTagName('tr'));
+
+    const isNumeric = columnIndex === 2;
+    const isReorder = columnIndex === previousSort;
+    if (!isReorder) {
+      sortOrder = true;
+    }
+    previousSort = columnIndex;
+    const sortedRows = rows.sort((a, b) => {
+      const cellA = a.getElementsByTagName('td')[columnIndex].innerText;
+      const cellB = b.getElementsByTagName('td')[columnIndex].innerText;
+
+      if (isNumeric) {
+        return sortOrder ? parseInt(cellA) - parseInt(cellB) : parseInt(cellB) - parseInt(cellA);
+      } else {
+        return sortOrder ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+      }
+    });
+
+    sortOrder = !sortOrder; // Toggle sort order
+
+    while (tbody.firstChild) {
+      tbody.removeChild(tbody.firstChild);
+    }
+
+    sortedRows.forEach(row => tbody.appendChild(row));
+  }
+
+  loadData();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+</body>
+</html>
