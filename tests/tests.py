@@ -105,10 +105,10 @@ if __name__ == "__main__":
     for item, value in ref_data.items():
       if item not in module_results:
         print("Missing " + item + " in test data")
-        sys.exit(1)
+        sys.exit(2)
       if value < module_results[item]:
         print(
           item + " has a greater size " + str(value) + " < " + str(module_results[item]))
-        sys.exit(2)
+        sys.exit(3)
     outfile.seek(0, 0)
     yaml.dump(module_results, outfile, default_flow_style=False)
