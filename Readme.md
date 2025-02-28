@@ -14,8 +14,9 @@ To compile and execute the tiny binaries, ensure you have the following tools in
 - [gcc](https://gcc.gnu.org/): the GNU Compiler Collection is used to compile the C code;
 - [g++](https://gcc.gnu.org/): the GNU C++ Compiler is necessary for compiling C++;
 - [go](https://go.dev/): Go toolchain is required for compiling Go code;
-- [java](https://openjdk.org/): the Java Development Kit is necessary for compiling Java code, though alternative approaches may involve native executables. You can choose
-your preferred jdk;
+- [java](https://openjdk.org/): the Java Development Kit is necessary for compiling Java code, though alternative approaches may involve native executables. You
+  can choose
+  your preferred jdk;
 - [python3](https://www.python.org/): python interpreter is needed to run Python file, though Python scripts are not compiled into binaries;
 - [rust](https://www.rust-lang.org): the Rust compiler toolchain is used to build rust binary;
 - [shell](https://en.wikipedia.org/wiki/Unix_shell/): nothing required, shell scripts leverage the system's built-in interpreter, making them dependency-free;
@@ -32,15 +33,15 @@ make tests
 
 ## Results
 
-| Langage       | Kind          | Size    |
-|---------------|---------------|---------|
-| ASM_corrupted | Compiled      | 149     |
-| ASM           | Compiled      | 163     |
-| Zig           | Compiled      | 12952   |
-| C             | Compiled      | 14280   |
-| CPP           | Compiled      | 16240   |
-| Go            | Compiled      | 1819356 |
-| Rust          | Compiled      | 3975016 |
-| Java          | Semi-compiled | 766     |
-| Shell         | Interpreted   | 31      |
-| Python        | Interpreted   | 41      |
+| Language | Kind          | Size (in bytes) |
+|----------|---------------|----------------:|
+| ASMc     | Compiled      |             149 |
+| ASM      | Compiled      |             163 |
+| Zig      | Compiled      |          12,952 |
+| C        | Compiled      |          14,280 |
+| CPP      | Compiled      |          16,240 |
+| Go       | Compiled      |       1,819,356 |
+| Rust     | Compiled      |       3,975,016 |
+| Java     | Semi-compiled |             766 |
+| Shell    | Interpreted   |              31 |
+| Python   | Interpreted   |              41 |

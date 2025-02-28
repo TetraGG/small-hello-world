@@ -36,7 +36,7 @@ go/tiny_hello_world: go/tiny_hello_world.go
 	go build -o $@ $<
 
 java/TinyHelloWorld.jar: java/TinyHelloWorld.class
-	jar cvf $@ $<
+	jar cvfe $@ TinyHelloWorld -C java $(call notdir,$<)
 
 java/TinyHelloWorld.class: java/TinyHelloWorld.java
 	javac $<
