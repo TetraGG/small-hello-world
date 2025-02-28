@@ -4,69 +4,177 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tiny Hello World</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Roboto', sans-serif;
       margin: 0;
-      padding: 20px;
-      background-color: #f4f4f4;
+      padding: 40px 20px;
+      background-color: #f0f4f8;
+      color: #333;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+      text-align: center;
     }
 
     h1 {
-      color: #333;
+      font-size: 2.5em;
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      background-color: #fff;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #f4f4f4;
+      padding: 30px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+    }
+
+    .section {
+      background-color: #fafafa;
+      border: 1px solid #e0e0e0;
       border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 40px;
+      padding: 0 20px 20px 20px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      border-spacing: 0;
       margin-top: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      table-layout: fixed;
     }
 
     th, td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: left;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
     }
 
     th {
-      background-color: #f2f2f2;
+      background-color: #3498db;
+      color: white;
+      font-weight: 700;
       cursor: pointer;
-      font-weight: bold;
+      position: relative;
+      text-align: center;
     }
 
-    tr:nth-child(even) {
+    td {
+      background-color: #fff;
+      text-align: left;
+    }
+
+    tr:nth-child(even) td {
       background-color: #f9f9f9;
     }
 
-    tr:hover {
+    tr:hover td {
       background-color: #f1f1f1;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      h2 {
+        font-size: 1.5em;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+    }
+
+    td:nth-child(1) {
+      text-align: left;
+    }
+
+    td:nth-child(2) {
+      text-align: right;
+    }
+
+    th.sorted-asc::after {
+      content: '↑';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    th.sorted-desc::after {
+      content: '↓';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
     }
   </style>
 </head>
 <body>
 <div class="container">
   <h1>Results</h1>
-  <table id="resultTable">
-    <thead>
-    <tr>
-      <th onclick="sortTable(0)">Language</th>
-      <th onclick="sortTable(1)">Kind</th>
-      <th onclick="sortTable(2)">Size (in bytes)</th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+  <div class="section">
+    <h2>Compiled languages</h2>
+    <table id="compiledTable">
+      <thead>
+      <tr>
+        <th onclick="sortTable('compiledTable', 0)">Language</th>
+        <th onclick="sortTable('compiledTable', 1)">Size (in bytes)</th>
+      </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Interpreted languages</h2>
+    <table id="interpretedTable">
+      <thead>
+      <tr>
+        <th onclick="sortTable('interpretedTable', 0)">Language</th>
+        <th onclick="sortTable('interpretedTable', 1)">Size (in bytes)</th>
+      </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Semi-compiled languages</h2>
+    <table id="semiCompiledTable">
+      <thead>
+      <tr>
+        <th onclick="sortTable('semiCompiledTable', 0)">Language</th>
+        <th onclick="sortTable('semiCompiledTable', 1)">Size (in bytes)</th>
+      </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </div>
+
 <script>
   async function loadData() {
     const compiledData = await fetch('data_compiled.yml').then(response => response.text());
@@ -77,58 +185,54 @@
     const interpreted = jsyaml.load(interpretedData);
     const semiCompiled = jsyaml.load(semiCompiledData);
 
-    const data = {
-      compiled: compiled,
-      interpreted: interpreted,
-      semiCompiled: semiCompiled
-    };
-
-    const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-    const languages = new Set();
-
-    for (const [kind, languagesData] of Object.entries(data)) {
-      for (const [language, size] of Object.entries(languagesData)) {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${language}</td><td>${kind}</td><td>${size}</td>`;
-        tableBody.appendChild(row);
-        languages.add(language);
-      }
-    }
-    sortTable(0);
+    fillTable('compiledTable', compiled);
+    fillTable('interpretedTable', interpreted);
+    fillTable('semiCompiledTable', semiCompiled);
   }
 
-  let sortOrder = true; // true for ascending, false for descending
-  let previousSort = -1;
+  function fillTable(tableId, data) {
+    const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+    for (const [language, size] of Object.entries(data)) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${language}</td><td>${size}</td>`;
+      tableBody.appendChild(row);
+    }
+    sortTable(tableId, 0);
+  }
 
-  function sortTable(columnIndex) {
-    const table = document.getElementById('resultTable');
+  let sortOrders = {};
+
+  function sortTable(tableId, columnIndex) {
+    const table = document.getElementById(tableId);
     const tbody = table.getElementsByTagName('tbody')[0];
     const rows = Array.from(tbody.getElementsByTagName('tr'));
+    const isNumeric = columnIndex === 1;
 
-    const isNumeric = columnIndex === 2;
-    const isReorder = columnIndex === previousSort;
-    if (!isReorder) {
-      sortOrder = true;
-    }
-    previousSort = columnIndex;
-    const sortedRows = rows.sort((a, b) => {
+    sortOrders[tableId] = sortOrders[tableId] || {};
+    const sortOrder = sortOrders[tableId][columnIndex] === undefined ? true : sortOrders[tableId][columnIndex];
+    sortOrders[tableId][columnIndex] = !sortOrder;
+
+    rows.sort((a, b) => {
       const cellA = a.getElementsByTagName('td')[columnIndex].innerText;
       const cellB = b.getElementsByTagName('td')[columnIndex].innerText;
-
       if (isNumeric) {
         return sortOrder ? parseInt(cellA) - parseInt(cellB) : parseInt(cellB) - parseInt(cellA);
-      } else {
-        return sortOrder ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
       }
+      return sortOrder ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
     });
 
-    sortOrder = !sortOrder; // Toggle sort order
+    const headers = table.querySelectorAll('th');
+    headers.forEach((header, index) => {
+      header.classList.remove('sorted-asc', 'sorted-desc');
+      if (index === columnIndex) {
+        header.classList.add(sortOrder ? 'sorted-asc' : 'sorted-desc');
+      }
+    });
 
     while (tbody.firstChild) {
       tbody.removeChild(tbody.firstChild);
     }
-
-    sortedRows.forEach(row => tbody.appendChild(row));
+    rows.forEach(row => tbody.appendChild(row));
   }
 
   loadData();
