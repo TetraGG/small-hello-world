@@ -6,7 +6,7 @@ ELF_HEADER:
         db  0x02                 ; EI_CLASS: Data encoding 64 bits
         db  0x01                 ; EI_DATA: Endianness (little)
         db  0x01                 ; EI_VERSION: ELF Version
-        db  0x03                 ; EI_OSABI: : OS ABI Linux
+        db  0x00                 ; EI_OSABI: : OS ABI System V
         dq  0x00                 ; EI_ABIVERSION, EI_PAD: ABI Version + PAD
     dw  0x02                     ; e_type: type EXEC
     dw  0x3E                     ; e_machine: machine x86_64
@@ -52,6 +52,6 @@ _start:
         xor     rdi, rdi
         syscall
 
-message: db     "Hello, world!", byte `\n`
+message: db     "Hello, World!", byte `\n`
 mlength  equ    $ - message
 filesize equ    $ - _start
